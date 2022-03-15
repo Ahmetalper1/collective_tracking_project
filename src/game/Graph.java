@@ -3,8 +3,10 @@ package game;
 import java.awt.Color;
 import java.util.logging.Level;
 
+//https://knowm.org/open-source/xchart/xchart-example-code/
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 
@@ -91,7 +93,7 @@ public class Graph
 		    /*
 		     * For every block found in the bottom automaton, we get its history
 		     * (both X and Y history), and give it to the chart that
-		     * automagically transform it into dots on the graph.
+		     * automatically transforms it into dots on the graph.
 		     */
 		    for (int i = 0; i < Game.bottomBlocks.size(); i++)
 		    {
@@ -104,6 +106,13 @@ public class Graph
 						Game.bottomBlocks.get(i).getYHistory());
 				}
 		    }
+		    
+		    //ada: add regression function line
+		    double[] xFc = {0, 20};
+		    double[] yFc = {0,20};
+		    XYSeries lineSeries = chart.addSeries("linear regression", xFc, yFc);
+		    lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
+		    //end ada
 	    }
 	    else
 	    {
