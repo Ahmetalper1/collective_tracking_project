@@ -1,0 +1,377 @@
+package game;
+
+import java.util.logging.Level;
+
+import automaton.Cell;
+import automaton.MiddleAutomaton;
+import logger.LoggerInstance;
+import utils.CheckCoords;
+
+/*
+ * The BlockDetector class holds the static method that detects new blocks on
+ * the bottom automaton: DetectBlocks().
+ */
+public class BlockDetector
+{
+	// Static counter for blocks of the bottom automaton. 
+	public static int blockIDBottom = 0;
+	
+	// Static counter for blocks of the middle automaton.
+	public static int blockIDMiddle = 0;
+	
+	/*
+	 * This function goes through the whole bottom automaton and detects alive
+	 * cells without blocks.
+	 */
+	public static void DetectBlocksBottom(Game game)
+	{
+		LoggerInstance.LOGGER.log(Level.FINEST,
+				"Starting to look for new bottom blocks ...");
+		
+		// Retrieving cells.
+		Cell[][] bottomCells = game.getBottomAutomaton().getGrid().getCells();
+		
+		// Iterating through the whole bottom automaton.
+		for (int i = 0; i < Game.BOTTOM_ROW; i++)
+		{
+			for (int j = 0; j < Game.BOTTOM_COLUMN; j++)
+			{
+				/*
+				 *  If one alive cell is found and has no block, we launch a
+				 *  BFS-like search to identify all the new block.
+				 */
+				if (bottomCells[i][j].isAlive() && bottomCells[i][j]
+						.getBlock() == -1)
+				{
+					BFSEquivalentBottom(j, i, blockIDBottom, bottomCells);
+					blockIDBottom++;
+				}
+			}
+		}
+	}
+	
+	public static void DetectBlocksMiddle(Game game)
+	{
+		LoggerInstance.LOGGER.log(Level.FINEST,
+				"Starting to look for new middle blocks ...");
+		
+		for (MiddleAutomaton middleAutomaton : game.getMiddleAutomaton())
+		{
+			// Retrieving cells.
+			Cell[][] middleCells = middleAutomaton.getGrid().getCells();
+
+			// Iterating through the whole bottom automaton.
+			for (int i = 0; i < Game.MIDDLE_ROW; i++)
+			{
+				for (int j = 0; j < Game.MIDDLE_COLUMN; j++)
+				{
+					/*
+					 * If one alive cell is found and has no block, we launch a
+					 * BFS-like search to identify all the new block.
+					 */
+					if (middleCells[i][j].isAlive()
+							&& middleCells[i][j].getBlock() == -1)
+					{
+						BFSEquivalentMiddle(j, i, blockIDMiddle, middleCells,
+								middleAutomaton.getID());
+						blockIDMiddle++;
+					}
+				}
+			}
+		}
+	}
+	
+	 /*
+	  * This function launches a BFS-like search on the automaton from
+	  * the given cell at coordinates X and Y. If it has alive neighbors with
+	  * no blocks, that means it's part of the new one. This is exclusively used
+	  * by the DetectBlocksBottom() method.
+	  */
+	private static void BFSEquivalentBottom(int x, int y, int blockID,
+			Cell[][] bottomCells)
+	{
+		// Setting up the actual cell to the correct blockID if not already set.
+		if (bottomCells[y][x].getBlock() == -1)
+		{
+			// Setting the current cell with the correct blockID.
+			bottomCells[y][x].setBlock(blockID, true);
+			
+			/*
+			 *  If the block was not created (1st call of this function), we
+			 *  create a new block.
+			 */
+			if (blockID >= Game.bottomBlocks.size())
+			{
+				Game.bottomBlocks.add(new Block(blockID, bottomCells[y][x],
+					BlockType.BOTTOM, Block.BOTTOM_BLOCK_AUTOMATON_ID));
+			}
+			// Adding the cell to the block.
+			else
+				Game.bottomBlocks.get(blockID).addCell(bottomCells[y][x]);
+		}
+		
+		/*
+		 * We then check here every neighbor of the current cell to see
+		 * if any is alive and has not any block yet. If so, we re-launch the
+		 * recursive function on this cell.		
+		 */
+		
+		for (int i = y - 1; i <= y + 1; i++)
+		{
+			for (int j = x - 1; j <= x + 1; j++)
+			{
+				if ((i != y || j != x)
+						&& CheckCoords.verifyCoordinatesBottom(i, j)
+						&& bottomCells[i][j].isAlive()
+						&& bottomCells[i][j].getBlock() == -1)
+				{
+					BFSEquivalentBottom(j, i, blockID, bottomCells);
+				}
+			}
+		}
+	}
+	
+	 /*
+	  * This function launches a BFS-like search on the automaton from
+	  * the given cell at coordinates X and Y. If it has alive neighbors with
+	  * no blocks, that means it's part of the new one. This is exclusively used
+	  * by the DetectBlocksMiddle() method.
+	  */
+	private static void BFSEquivalentMiddle(int x, int y, int blockID,
+			Cell[][] middleCells, int automatonID)
+	{
+		// Setting up the actual cell to the correct blockID if not already set.
+		if (middleCells[y][x].getBlock() == -1)
+		{
+			// Setting the current cell with the correct blockID.
+			middleCells[y][x].setBlock(blockID, true);
+			
+			/*
+			 *  If the block was not created (1st call of this function), we
+			 *  create a new block.
+			 */
+			if (blockID >= Game.middleBlocks.size())
+			{
+				Game.middleBlocks.add(new Block(blockID, middleCells[y][x],
+					BlockType.MIDDLE, automatonID));
+			}
+			// Adding the cell to the block.
+			else
+				Game.middleBlocks.get(blockID).addCell(middleCells[y][x]);
+		}
+		
+		/*
+		 * We then check here every neighbor of the current cell to see
+		 * if any is alive and has not any block yet. If so, we re launch the
+		 * recursive function no this cell.		
+		 */
+		for (int i = y - 1; i <= y + 1; i++)
+		{
+			for (int j = x - 1; j <= x + 1; j++)
+			{
+				if ((i != y || j != x)
+						&& CheckCoords.verifyCoordinatesMiddle(i, j)
+						&& middleCells[i][j].isAlive()
+						&& middleCells[i][j].getBlock() == -1)
+				{
+					BFSEquivalentMiddle(j, i, blockID, middleCells,
+							automatonID);
+				}
+			}
+		}
+	}
+	
+	/*
+	 * This function detects blocks splitting and blocks merging. Is also
+	 * updates the center of every block in the blocks list.
+	 */
+	public static void updateBlocks(Game game, int tick)
+	{
+		LoggerInstance.LOGGER.log(Level.FINEST, 
+				"Updating center of all blocks ...");
+		
+		// Updating each block's center.
+		for (Block block : Game.bottomBlocks)
+		{
+			// Verifying that the block we're currently on is alive.
+			if (block.getStatus())
+			{
+				block.updateCenter(tick);
+			}
+		}
+		
+		// Updating each block's center.
+		for (Block block : Game.middleBlocks)
+		{
+			// Middle blocks do not die. //Ada-TODO: why is that?
+			block.updateCenter(tick);
+		}
+	}
+	
+	/*
+	 * This function is in charge of the detection of blocks division and/or
+	 * merging. This will update the blocks status, and cells. It can also
+	 * create new blocks when a division occurs.
+	 */
+	public static void DetectMergeAndDivisionBottom(Game game)
+	{
+		// Marks the cells as visited yet or not.
+		boolean[][] visitedCells =
+				new boolean[Game.BOTTOM_ROW][Game.BOTTOM_COLUMN];
+		
+		// Marks the blocks as visited yet or not.
+		boolean[] visitedBlocks = new boolean[Game.bottomBlocks.size()];
+		
+		// Real cells of the grid. Used to modify blocks.
+		Cell[][] gameCells = game.getBottomAutomaton().getGrid().getCells();
+		
+		// Going through the whole grid.
+		for (int i = 0; i < Game.BOTTOM_ROW; i++)
+		{
+			for (int j = 0; j < Game.BOTTOM_COLUMN; j++)
+			{
+				// Only iterating on alive, not visited cells part of a block.
+				if (!visitedCells[i][j] && gameCells[i][j].isAlive())
+				{
+					if (visitedBlocks[gameCells[i][j].getBlock()])
+					{
+						// Block to be added to the game's list.
+						Block newBlock = new Block(blockIDBottom++,
+								gameCells[i][j], BlockType.BOTTOM,
+								Block.BOTTOM_BLOCK_AUTOMATON_ID);
+						
+						// This fills up the newBlock block. See method.
+						ReplaceWithNewBlockBottom(i, j, visitedCells, gameCells,
+								newBlock);
+						
+						Game.bottomBlocks.add(newBlock);
+					}
+					else
+					{
+						/*
+						 * Exploring a block with the cell (i, j) as start.
+						 * Verifying if there is a merge occuring.
+						 */
+						boolean isMergedBlock = BlockVerificationBFSBottom(
+							i, j, visitedCells, gameCells,
+							gameCells[i][j].getBlock());
+
+						// If there is a merge, we create a new block.
+						if (isMergedBlock)
+						{
+							Block newBlock = new Block(blockIDBottom++,
+								gameCells[i][j], BlockType.BOTTOM,
+								Block.BOTTOM_BLOCK_AUTOMATON_ID);
+							ReplaceWithNewBlockBottom(i, j, visitedCells,
+								gameCells, newBlock);
+							Game.bottomBlocks.add(newBlock);
+						}
+						else
+						{
+							// If no merge is found, the block is visited.
+							visitedBlocks[gameCells[i][j].getBlock()] = true;
+						}
+					}
+				}
+			}
+		}
+		
+		/*
+		 * Marking as dead all blocks that were not visited (either no cells
+		 * left or merged with other ones).
+		 */
+		int index = 0;
+		for (boolean visited : visitedBlocks)
+		{
+			if (!visited)
+			{
+				Game.bottomBlocks.get(index).setStatus(false);
+			}
+			index++;
+		}
+	}
+	
+	/*
+	 * This function explores the block from a starting cell (i, j). It verifies
+	 * that the block is not merged with another one, and simply marks it as
+	 * visited. If anything happens, it calls another method to create a new
+	 * block. The boolean returned indicates if the block verification went well
+	 * (ie false if there was no merge) or not (true is there is a merge
+	 * detected).
+	 */
+	private static boolean BlockVerificationBFSBottom(int i, int j,
+			boolean[][] visitedCells, Cell[][] gameCells, int blockID)
+	{
+		// This holds the return value.
+		boolean result = false;
+		
+		// Marking the cell we are working on as visited already.
+		visitedCells[i][j] = true;
+		
+		// Iterating through the whole grid.
+		for (int offset_i = i - 1; offset_i <= i + 1; offset_i++)
+		{
+			for (int offset_j = j - 1; offset_j <= j + 1; offset_j++)
+			{
+				// If the cell exists, is alive and not visited.
+				if (CheckCoords.verifyCoordinatesBottom(offset_i, offset_j)
+						&& !visitedCells[offset_i][offset_j]
+						&& gameCells[offset_i][offset_j].isAlive())
+				{
+					// We detect here a merge (the ID is unknown) !
+					if (gameCells[offset_i][offset_j].getBlock() != blockID)
+					{
+						return true;
+					}
+					// Everything is good, we stay on the right block.
+					else
+					{
+						result = result || BlockVerificationBFSBottom(offset_i,
+							offset_j, visitedCells, gameCells, blockID);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	/*
+	 * This method simply explores with a BFS all the alive cells from an
+	 * initial one on (i, j) and updates their block with the new ID blockID.
+	 * It creates a new block and adds it to the game list of blocks.
+	 */
+	private static void ReplaceWithNewBlockBottom(int i, int j,
+			boolean[][] visitedCells, Cell[][] gameCells, Block newBlock)
+	{
+		visitedCells[i][j] = true;
+		
+		// Iterating through the whole grid.
+		for (int offset_i = i - 1; offset_i <= i + 1; offset_i++)
+		{
+			for (int offset_j = j - 1; offset_j <= j + 1; offset_j++)
+			{	
+				// If the cell exists, is alive and part of the new block.
+				if (CheckCoords.verifyCoordinatesBottom(offset_i, offset_j)
+						&& gameCells[offset_i][offset_j].getBlock()
+							!= newBlock.getID()
+						&& gameCells[offset_i][offset_j].isAlive())
+				{
+					Cell currentCell = gameCells[offset_i][offset_j];
+					
+					// Removing old block, and setting the new one to the cell.
+					Game.bottomBlocks.get(currentCell.getBlock())
+						.removeCell(currentCell);
+					currentCell.setBlock(newBlock.getID(), false);
+					newBlock.addCell(currentCell);
+					
+					// Updating the state and the color of the cell.
+					currentCell.updateState(true);
+							
+					// Applying it to any alive neighbor.
+					ReplaceWithNewBlockBottom(offset_i, offset_j, visitedCells,
+						gameCells, newBlock);
+				}
+			}
+		}
+	}
+}
