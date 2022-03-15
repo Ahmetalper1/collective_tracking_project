@@ -81,6 +81,8 @@ public class HistoryAnalyzer
 		 * linearLeastSquaresRegression() method.
 		 */
 		PolynomialFunction function = linearLeastSquaresRegression(block);
+		//ada added: add the function to the block
+		block.setBlockTrajectoryFunction(function);
 		
 		LoggerInstance.LOGGER.log(Level.FINEST, "Finished the interpolation" +
 				" for block " + block.getID() + "...");

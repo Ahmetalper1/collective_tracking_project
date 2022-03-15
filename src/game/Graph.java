@@ -1,8 +1,10 @@
 package game;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.logging.Level;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 //https://knowm.org/open-source/xchart/xchart-example-code/
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
@@ -104,15 +106,31 @@ public class Graph
 					chart.addSeries(level.toString() + " Block " + i,
 						Game.bottomBlocks.get(i).getXHistory(),
 						Game.bottomBlocks.get(i).getYHistory());
+					
+					//ada: add regression function line
+				    PolynomialFunction blockTrajectoryFunction = botBlock.getBlockTrajectoryFunction();
+				    if(blockTrajectoryFunction != null) {
+				    	List<Double> xList = Game.bottomBlocks.get(i).getXHistory();
+				    	List<Double> yList = Game.bottomBlocks.get(i).getYHistory();
+				    	double firstX = xList.get(0).doubleValue();
+				    	double lastX = xList.get(xList.size()-1).doubleValue();
+				    	//double firstY = yList.get(0).doubleValue();
+				    	//double lastY = yList.get(yList.size()-1).doubleValue();
+				    	double firstFcY = blockTrajectoryFunction.value(firstX);
+				    	double lastFcY = blockTrajectoryFunction.value(lastX);
+				    	double[] xFc = {firstX, lastX};//{0, 20};
+				    	double[] yFc = {firstFcY, lastFcY};//{0, 20};
+				    	XYSeries lineSeries = chart.addSeries("linear regression", xFc, yFc);
+				    	lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
+				    }
+				    else {
+				    	System.out.println("Trajectory function NULL for block: " + botBlock.getID());
+				    }
+				    //end ada
 				}
 		    }
 		    
-		    //ada: add regression function line
-		    double[] xFc = {0, 20};
-		    double[] yFc = {0,20};
-		    XYSeries lineSeries = chart.addSeries("linear regression", xFc, yFc);
-		    lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
-		    //end ada
+		    
 	    }
 	    else
 	    {

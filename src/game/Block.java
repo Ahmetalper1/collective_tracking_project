@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
+
 import automaton.Cell;
 import logger.LoggerInstance;
 import utils.TickHistory;
@@ -60,6 +62,12 @@ public class Block
 	
 	private TickHistory tickHistory;
 	
+	
+	//ada added
+	//function approximating the xy-history points
+	private PolynomialFunction blockTrajectoryFunction;
+	
+
 	// Constructor taking the unique ID and the first cell of the block.
 	public Block(int ID, Cell cell, BlockType type, int automatonID)
 	{
@@ -188,5 +196,13 @@ public class Block
 	public BlockType getType()
 	{
 		return this.type;
+	}
+	
+	public PolynomialFunction getBlockTrajectoryFunction() {
+		return blockTrajectoryFunction;
+	}
+
+	public void setBlockTrajectoryFunction(PolynomialFunction blockTrajectoryFunction) {
+		this.blockTrajectoryFunction = blockTrajectoryFunction;
 	}
 }

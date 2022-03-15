@@ -118,19 +118,12 @@ public class Simulator extends Thread
 					LoggerInstance.LOGGER.log(Level.FINEST,
 							"Starting the analysis of blocks ...");
 					
+					
 					// This counts the number of blocks, for printing purposes.
 					int block_counter = 0;
 					
-					// Displaying every graph of movements of the blocks.
-					if (Game.bottomBlocks.size() > 0)
-						bottomGraph.display();
 					
-					for (Graph graph : this.middleGraphs)
-					{
-						if (Game.middleBlocks.size() > 0)
-							graph.display();
-					}
-					
+					////ada: analysis moved here (from after the display)
 					// Analyzing each block.
 					for (Block block : Game.bottomBlocks)
 					{
@@ -142,6 +135,32 @@ public class Simulator extends Thread
 						
 						block_counter++;
 					}
+					////
+		
+					
+					// Displaying every graph of movements of the blocks.
+					if (Game.bottomBlocks.size() > 0)
+						bottomGraph.display();
+					
+					for (Graph graph : this.middleGraphs)
+					{
+						if (Game.middleBlocks.size() > 0)
+							graph.display();
+					}
+					
+					/** ada: moved above, before the display
+					// Analyzing each block.
+					for (Block block : Game.bottomBlocks)
+					{
+						System.out.println("Bottom Block " + block_counter
+							+ " : " + HistoryAnalyzer.analyzeBlock(block));
+						
+						block.getTickHistory()
+							.FillMissingTicks(LIMIT_STEP_ANALYSIS);
+						
+						block_counter++;
+					}
+					*/
 					
 					block_counter = 0;
 					
