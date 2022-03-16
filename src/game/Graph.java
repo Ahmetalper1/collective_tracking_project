@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Color;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -120,7 +121,7 @@ public class Graph
 				    	double lastFcY = blockTrajectoryFunction.value(lastX);
 				    	double[] xFc = {firstX, lastX};//{0, 20};
 				    	double[] yFc = {firstFcY, lastFcY};//{0, 20};
-				    	XYSeries lineSeries = chart.addSeries("linear regression", xFc, yFc);
+				    	XYSeries lineSeries = chart.addSeries("linear regression_" + botBlock.getID(), xFc, yFc);
 				    	lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
 				    }
 				    else {
@@ -144,6 +145,27 @@ public class Graph
 					chart.addSeries(level.toString() + " Block " + i,
 						Game.middleBlocks.get(i).getXHistory(),
 						Game.middleBlocks.get(i).getYHistory());
+					
+					//ada: add regression function line
+				    PolynomialFunction blockTrajectoryFunction = midBlock.getBlockTrajectoryFunction();
+				    if(blockTrajectoryFunction != null) {
+				    	List<Double> xList = Game.middleBlocks.get(i).getXHistory();
+				    	List<Double> yList = Game.middleBlocks.get(i).getYHistory();
+				    	double firstX = xList.get(0).doubleValue();
+				    	double lastX = xList.get(xList.size()-1).doubleValue();
+				    	//double firstY = yList.get(0).doubleValue();
+				    	//double lastY = yList.get(yList.size()-1).doubleValue();
+				    	double firstFcY = blockTrajectoryFunction.value(firstX);
+				    	double lastFcY = blockTrajectoryFunction.value(lastX);
+				    	double[] xFc = {firstX, lastX};//{0, 20};
+				    	double[] yFc = {firstFcY, lastFcY};//{0, 20};
+				    	XYSeries lineSeries = chart.addSeries("linear regression_" + midBlock.getID(), xFc, yFc);
+				    	lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
+				    }
+				    else {
+				    	System.out.println("Trajectory function NULL for block: " + midBlock.getID());
+				    }
+				    //end ada
 				}
 		    	else if (midBlock.getXHistory().size() >= MINIMUM_HISTORY_SIZE
 			    		&& midBlock.getYHistory().size() >= MINIMUM_HISTORY_SIZE)

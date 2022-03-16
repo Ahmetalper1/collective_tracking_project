@@ -135,6 +135,23 @@ public class Simulator extends Thread
 						
 						block_counter++;
 					}
+					
+					block_counter = 0;
+					
+					for (Block block : Game.middleBlocks)
+					{
+						System.out.println("Middle Block " + block_counter
+							+ " (Threshold = "
+							+ game.getMiddleAutomaton()
+								.get(block.getAutomatonID()).getThreshold()
+							+ " cell(s))"
+							+ " : " + HistoryAnalyzer.analyzeBlock(block));
+						
+						block.getTickHistory()
+							.FillMissingTicks(LIMIT_STEP_ANALYSIS);
+						
+						block_counter++;
+					}
 					////
 		
 					
@@ -160,7 +177,7 @@ public class Simulator extends Thread
 						
 						block_counter++;
 					}
-					*/
+					
 					
 					block_counter = 0;
 					
@@ -178,6 +195,8 @@ public class Simulator extends Thread
 						
 						block_counter++;
 					}
+					
+					*/
 					
 					TickHistory.FillBottomFile(game.getBottomFW());
 					TickHistory.FillMiddleFile(game.getMiddleFW());
