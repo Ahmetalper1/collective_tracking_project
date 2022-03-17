@@ -413,6 +413,9 @@ public class HistoryAnalyzer
 		// Creating the result function.
 		PolynomialFunction function = new PolynomialFunction(poly);
 		
+		//System.out.println(":::::::::::: regression function calculated for block "  + 
+			//	block.getID() + ": " + function.toString());
+		
 		return function;
 	}
 }

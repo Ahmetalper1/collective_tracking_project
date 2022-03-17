@@ -292,8 +292,9 @@ public class BottomAutomaton extends AbstractAutomaton
 			}
 		}
 		
-		if (!blockSet)
-			setPreviousBlock(i, j, cellGrid);
+		if (!blockSet) {
+			setPreviousBlock(i, j, cellGrid);//ada commented !!!!!!!!!!!!!
+		}
 	}
 	
 	private void setPreviousBlock(int i, int j, CellGrid cellGrid)

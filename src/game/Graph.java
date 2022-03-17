@@ -125,7 +125,10 @@ public class Graph
 				    	lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
 				    }
 				    else {
-				    	System.out.println("Trajectory function NULL for block: " + botBlock.getID());
+				    	
+				    	System.out.println("Trajectory function NULL for bottom block: " + botBlock.getID() +
+				    			" with " + botBlock.getXHistory().size() + " points ");
+				    	
 				    }
 				    //end ada
 				}
@@ -162,8 +165,15 @@ public class Graph
 				    	XYSeries lineSeries = chart.addSeries("linear regression_" + midBlock.getID(), xFc, yFc);
 				    	lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
 				    }
-				    else {
-				    	System.out.println("Trajectory function NULL for block: " + midBlock.getID());
+				    else {//NULL regression function --> print the block ID & points
+				    	/*
+				    	System.out.println("Trajectory function NULL for middle block: " + midBlock.getID() +
+				    			" with " + midBlock.getXHistory().size() + " points: ");
+				    	for(int k=0; k<midBlock.getXHistory().size(); k++) {
+				    		System.out.print("(" + midBlock.getXHistory().get(k) + ", " + midBlock.getYHistory().get(k) + ")");
+				    	}
+				    	*/
+				    	System.out.println();
 				    }
 				    //end ada
 				}
