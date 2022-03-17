@@ -1,7 +1,9 @@
 package game;
 
+import java.awt.Point;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
@@ -42,11 +44,15 @@ public class HistoryAnalyzer
 		//flattenPoints(block);//ada commented -- no need for flatten points, or?
 			
 		// Error case if there is not enough points in the history of the block.
-		if (verifyBlock(block) == 1)
+		int verificationCode = verifyBlock(block);//ada added
+		//if (verifyBlock(block) == 1)//
+		if(verificationCode == 1)
 		{
-			LoggerInstance.LOGGER.log(Level.SEVERE,
+			LoggerInstance.LOGGER.log(//Level.SEVERE,
+					Level.INFO,
 					"Block " + block.getID() +
-					" does not meet the requirements for the interpolation !");
+					//" does not meet the requirements for the interpolation !");
+					"only consists of a single point and cannot be further analysed");
 			
 			return "This block is static at point ("
 				+ block.getXHistory().get(0) + ';' + block.getYHistory().get(0)
@@ -68,6 +74,12 @@ public class HistoryAnalyzer
 					+ " it has two or more points on the same X coordinate.";
 		}
 		*/
+		
+		//ada:
+		
+		if(verificationCode == 3) {
+		//	System.out.println("---------->>>>>>>verifyBlock returned code : " + verificationCode + "--> found same-X points");
+		}
 		
 		
 		LoggerInstance.LOGGER.log(Level.FINEST, "Launching interpolation on" 
@@ -94,24 +106,45 @@ public class HistoryAnalyzer
 		String result = "The block was successfully analyzed. The equation of"
 			+ " the movement is : ";
 		
-		if (function.getCoefficients().length == 2)
-		{
-			result += DF.format(Double.valueOf(function.getCoefficients()[1]))
-					+ "x ";
+		
+		//ada added test
+		int coefLength = function.getCoefficients().length;
+		if((coefLength > 2) || (coefLength < 1)) {
+			LoggerInstance.LOGGER.log(Level.WARNING, 
+					"analysys produced function with more than two coefficients ?! " + coefLength);
+			return result += "function with " + coefLength + " coefficients cannot be displayed (review code)";
 		}
-		
-		if (function.getCoefficients()[0] > 0)
-			result += "+ ";
-		
-		result += DF.format(Double.valueOf(function.getCoefficients()[0]));
-		
-		return result;
+		else {
+					
+			if (function.getCoefficients().length == 2)
+			{
+				result += DF.format(Double.valueOf(function.getCoefficients()[1]))
+						+ "x ";
+			}
+			
+			if (function.getCoefficients()[0] > 0) {//ada added second line in-between curly brackets as well for one param
+				result += "+ ";
+			
+				result += DF.format(Double.valueOf(function.getCoefficients()[0]));
+			}//ada added end-brackets here
+			
+			
+			
+			return result;
+		}
 	}
 	
 	/*
 	 * The goal of this function is to verify that it is possible to apply an
 	 * interpolation on the block movement history and that there is enough
 	 * points to do so.
+	 * 
+	 * ada added:
+	 * returns: 
+	 * 	1: if there's only one or zero points;
+	 *  2: if there are several y values for the same x point
+	 *  3: if there are many points & they are all on the same spot
+	 *  0: points are fine and ready to analyse 
 	 */
 	private static int verifyBlock(Block block)
 	{
@@ -122,22 +155,86 @@ public class HistoryAnalyzer
 		if (block.getXHistory().size() < MINIMUM_POINT_HISTORY)
 			return 1;
 		
+		
+		
+		//ada: detect static object from several non-moving points
+		// Creating the points that will be use to calculate.
+		List<Double> xPoints = block.getXHistory();
+		List<Double> yPoints = block.getYHistory();
+		
+		//get first point
+		Double xPoint0 = xPoints.get(0);
+		Double yPoint0 = yPoints.get(0);
+		
+		boolean allPointsEqual = true;
+		
+		//checking if all points are equal  
+		for (int i = 0; i < block.getYHistory().size(); i++)
+		{
+			if(!xPoint0.equals(xPoints.get(i)) || !yPoint0.equals(yPoints.get(i))) {
+				allPointsEqual = false;
+				break;
+			}
+		}
+		if(allPointsEqual == true) {
+			System.out.println("--> Found static block (or several non-moving points): blockID " + 
+					block.getID() + " at point (" + xPoint0 + "," + yPoint0 + ")");
+			return 1;
+		}
+		//end ada
+		
+		
+		
 		/*
 		 * For each center point recorded in the history of the block, we verify
 		 * that there is no previous center point declared with the same X
 		 * coordinate.
 		 */
+		/*
 		for (int i = 0; i < block.getXHistory().size(); i++)
 		{
 			for (int j = 0; j < i; j++)
 			{
 				if (Math.abs(block.getXHistory().get(i)
-						- block.getXHistory().get(j)) < Double.valueOf("0.01"))
+						- block.getXHistory().get(j)) < Double.valueOf("0.0001"))
 				{		
 					return 2;
 				}
 			}
 		}
+		*/
+		
+		
+		//ada added
+		//detect cases where several but not all points have the same x value
+		boolean duplicateXPoints = false;
+		for(int i = 0; i < block.getXHistory().size(); i++) 
+		{
+			Double xPoint1 = block.getXHistory().get(i); 
+			for(int j = i+1; j < block.getXHistory().size(); j++) {
+				Double xPoint2 = block.getXHistory().get(j);
+				//if(xPoint1.equals(xPoint2)) {//if the two points have the same x values
+				if(xPoint1.compareTo(xPoint2) == 0) {
+				//if(Math.abs(xPoint1 - xPoint2) < 0.0000001) {
+					
+					//System.out.println("---------->>>>>>>found  same-X points: " + xPoint1 + ", " + xPoint2);
+					
+					//then shift the y value of point2 by a small delta in the yHistory
+					block.shiftXofHistoryPoint(j, Double.valueOf(0.00001));
+					
+					//System.out.println("----------<<<<<<<changed  same-X points: " + 
+					//		block.getXHistory().get(i) + ", " + block.getXHistory().get(j));
+					
+					duplicateXPoints = true;
+				}
+				else {
+					//System.out.println("<<<<<<<<<---------->>>>>>>NOT found  same-X points: " + xPoint1 + ", " + xPoint2);
+				}
+			}
+		}
+		if(duplicateXPoints) {return 3;}//ada added
+		
+		//end ada
 		
 		// Everything is good, we can start the interpolation.
 		return 0;
@@ -299,6 +396,20 @@ public class HistoryAnalyzer
 		poly[0] = SR.getIntercept();
 		poly[1] = SR.getSlope();
 		
+		
+		//ada added
+		if((Double.valueOf(poly[0])).isNaN() || Double.valueOf(poly[1]).isNaN()) {//NaN: not a number
+			
+			System.out.println(">>>>>>>>>>>> Block " + block.getID() + " analysed and produced function: " +
+					">intercept = " + poly[0] + "; slope = " + poly[1] + 
+					"--> from number of points: " + points.length + "; with x values: "); 	
+			
+			for(int i=0; i<points.length; i++) {
+				System.out.print("(" + points[i][0] + "," + points[i][1] + "); ");
+			} 
+			
+			System.out.println();
+		}
 		// Creating the result function.
 		PolynomialFunction function = new PolynomialFunction(poly);
 		

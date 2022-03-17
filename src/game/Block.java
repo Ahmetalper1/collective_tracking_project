@@ -56,7 +56,6 @@ public class Block
 	 * the center of the block had in the past. Its length is the number of
 	 * iterations since the creation of the block.
 	 */
-	//Ada-TODO: why not a point history? List<Point>
 	private List<Double> Xhistory;
 	private List<Double> Yhistory;
 	
@@ -205,4 +204,11 @@ public class Block
 	public void setBlockTrajectoryFunction(PolynomialFunction blockTrajectoryFunction) {
 		this.blockTrajectoryFunction = blockTrajectoryFunction;
 	}
+	
+	public void shiftXofHistoryPoint(int xIndex, Double shiftVal) {
+		double shiftedXvalue = this.Xhistory.get(xIndex);
+		shiftedXvalue = shiftedXvalue + shiftVal;
+		this.Xhistory.set(xIndex, shiftedXvalue);
+	}
+	
 }
