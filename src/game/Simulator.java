@@ -75,14 +75,15 @@ public class Simulator extends Thread
 			try
 			{
 				// Stopping the thread to let some time to display/see.
-				Thread.sleep(250);
+				//Thread.sleep(250);
+				Thread.sleep(50);//ada shortneed sleep time
 				
 				// Detecting new blocks if new blocks are found !
 				BlockDetector.DetectBlocksBottom(game);
-				BlockDetector.DetectBlocksMiddle(game);
+				BlockDetector.DetectBlocksMiddle(game);//ada: commented temp!!!!!!!!!!!!!!!!!!!!!!!!
 				
 				// This updates every block center.
-				BlockDetector.updateBlocks(game, iteration);
+				BlockDetector.updateBlockCenteres(game, iteration);
 				
 				/*
 				 *  Getting the next iteration on the bottom automaton.
@@ -91,7 +92,7 @@ public class Simulator extends Thread
 				 */
 				LoggerInstance.LOGGER.log(Level.FINEST,
 						"Updating every automaton");
-				game.getBottomAutomaton().nextIteration();
+				game.getBottomAutomaton().nextIteration();//applying the rules to the CA
 				
 				// Handles blocks divisions and merges.
 				BlockDetector.DetectMergeAndDivisionBottom(game);
@@ -130,8 +131,7 @@ public class Simulator extends Thread
 						System.out.println("Bottom Block " + block_counter
 							+ " : " + HistoryAnalyzer.analyzeBlock(block));
 						
-						block.getTickHistory()
-							.FillMissingTicks(LIMIT_STEP_ANALYSIS);
+						block.getTickHistory().FillMissingTicks(LIMIT_STEP_ANALYSIS);
 						
 						block_counter++;
 					}
@@ -147,8 +147,7 @@ public class Simulator extends Thread
 							+ " cell(s))"
 							+ " : " + HistoryAnalyzer.analyzeBlock(block));
 						
-						block.getTickHistory()
-							.FillMissingTicks(LIMIT_STEP_ANALYSIS);
+						block.getTickHistory().FillMissingTicks(LIMIT_STEP_ANALYSIS);
 						
 						block_counter++;
 					}

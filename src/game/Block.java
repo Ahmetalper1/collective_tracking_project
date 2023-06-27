@@ -68,7 +68,7 @@ public class Block
 	
 
 	// Constructor taking the unique ID and the first cell of the block.
-	public Block(int ID, Cell cell, BlockType type, int automatonID)
+	public Block(int ID, Cell firstBlockCell, BlockType type, int automatonID)
 	{
 		LoggerInstance.LOGGER.log(Level.FINEST, "New block found ! ID : " + ID);
 		
@@ -81,7 +81,7 @@ public class Block
 		
 		// Creating the cells list and adding it the first cell.
 		cells = new ArrayList<Cell>();
-		cells.add(cell);
+		cells.add(firstBlockCell);
 		
 		// Instantiating the center point.
 		this.center = new Point(0, 0);

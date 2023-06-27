@@ -97,9 +97,15 @@ public class Game
 			boolean[][] middleCells = abstraction.ComputeMiddle
 				.apply(thresholdMid, cells, null);
 			
+			
 			MiddleAutomaton newMiddle = new MiddleAutomaton(
 					new Dimension(MIDDLE_COLUMN, MIDDLE_ROW), middleCells,
 					thresholdMid, automatonCounter);
+			//ada changed to have larger midle windows
+			/*
+			MiddleAutomaton newMiddle = new MiddleAutomaton(//!!!!!!!!!!!!
+					new Dimension(12, 26), middleCells,
+					thresholdMid, automatonCounter);*/
 			
 			// Instantiating the middle automaton with the new cells.
 			this.middleAutomaton.add(newMiddle);

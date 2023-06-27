@@ -22,6 +22,9 @@ public class ComputeMiddle
 			case SQUARE_2x2:
 				square_size = 2;
 				break;
+			case SQUARE_3x3: //ada added case
+				square_size = 3;
+				break;
 			case SQUARE_4x4:
 				square_size = 4;
 				break;
@@ -64,22 +67,20 @@ public class ComputeMiddle
 					// Updating the cell's block.
 					if (automaton != null)
 					{
-						AssignBlockMiddle.AssignBlockMiddleMethod(i, j,
-							automaton);
+						AssignBlockMiddle.AssignBlockMiddleMethod(i, j, automaton);//ada commented: bad idea :)
 					}
 				}
 				
 				// Setting up the dead cell if the automaton exists.
-				else if (automaton != null && automaton.getGrid()
-						.getCells()[i][j].getBlock() != -1)
+				else if (automaton != null && automaton.getGrid().getCells()[i][j].getBlockId() != -1)
 				{
 					// Removing the cell from the block's list.
 					Game.middleBlocks.get(automaton.getGrid().getCells()[i][j]
-						.getBlock())
+						.getBlockId())
 						.removeCell(automaton.getGrid().getCells()[i][j]);
 					
 					// Setting the cell's blockID to -1 (dead).
-					automaton.getGrid().getCells()[i][j].setBlock(-1, false);
+					automaton.getGrid().getCells()[i][j].setBlockId(-1, false);
 				}
 			}
 		}

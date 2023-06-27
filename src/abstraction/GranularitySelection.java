@@ -15,6 +15,7 @@ public class GranularitySelection
 	public enum Granularity
 	{
 		SQUARE_2x2,
+		SQUARE_3x3,
 		SQUARE_4x4,
 		SQUARE_8x8,
 		SQUARE_10x10

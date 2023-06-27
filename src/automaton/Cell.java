@@ -69,7 +69,7 @@ public class Cell
 		 */
 		graphic = new JButton();
 		if (isON)
-			graphic.setBackground(Color.MAGENTA);
+			graphic.setBackground(Color.GREEN);//MAGENTA);//YELLOW);//MAGENTA);
 		else
 			graphic.setBackground(Color.GRAY);
 		
@@ -88,7 +88,8 @@ public class Cell
 			this.isON = true;
 			if (blockID != -1)
 			{
-				graphic.setBackground(Cell.colors[blockID % Cell.colorNB]);
+				graphic.setBackground(Cell.colors[(blockID) % Cell.colorNB]);
+				//graphic.setBackground(Cell.colors[(blockID + 3) % Cell.colorNB]);//ada : to produce yellow middle scale
 			}
 			else
 			{
@@ -112,17 +113,17 @@ public class Cell
 		return this.isON;
 	}
 	
-	public int getBlock()
+	public int getBlockId()
 	{
 		return this.blockID;
 	}
 	
-	public int getPreviousBlock()
+	public int getPreviousBlockId()
 	{
 		return this.previousBlockID;
 	}
 	
-	public void setBlock(int blockID, boolean overridePrevious)
+	public void setBlockId(int blockID, boolean overridePrevious)
 	{
 		if (!overridePrevious)
 		{

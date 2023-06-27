@@ -52,7 +52,8 @@ public class BottomAutomaton extends AbstractAutomaton
 				new boolean[Game.BOTTOM_ROW][Game.BOTTOM_COLUMN];
 		
 		/*
-		 * We are here verifying the number of alive neighbors the cell has.
+		 * ada: applying the rules to the CA (to all cells)
+		 * We are here verifying the number of alive neighbors that each cell has.
 		 * This will allow us to define its next state thanks to the rules.
 		 */
 		for (int i = 0; i < Game.BOTTOM_ROW; i++)
@@ -195,14 +196,14 @@ public class BottomAutomaton extends AbstractAutomaton
 				 * it back to -1 to indicate it is not part of any block.
 				 * We also remove the cell from the block cells.
 				 */
-				if (cellGrid.getCells()[i][j].getBlock() != -1)
+				if (cellGrid.getCells()[i][j].getBlockId() != -1)
 				{
 					Game.bottomBlocks.get(cellGrid.getCells()[i][j]
-							.getBlock())
+							.getBlockId())
 							.removeCell(cellGrid
 							.getCells()[i][j]);
 					
-					cellGrid.getCells()[i][j].setBlock(-1, false);
+					cellGrid.getCells()[i][j].setBlockId(-1, false);
 				}
 			}
 			
@@ -224,15 +225,15 @@ public class BottomAutomaton extends AbstractAutomaton
 				 * it back to -1 to indicate it is not part of any block.
 				 * We also remove the cell from the block cells.
 				 */
-				if (cellGrid.getCells()[i][j].getBlock() != -1)
+				if (cellGrid.getCells()[i][j].getBlockId() != -1)
 				{
 					Game.bottomBlocks.get(cellGrid
 							.getCells()[i][j]
-							.getBlock())
+							.getBlockId())
 							.removeCell(cellGrid
 							.getCells()[i][j]);
 					
-					cellGrid.getCells()[i][j].setBlock(-1, false);
+					cellGrid.getCells()[i][j].setBlockId(-1, false);
 				}
 			}
 			
@@ -259,7 +260,7 @@ public class BottomAutomaton extends AbstractAutomaton
 				if (!(temp_i == i && temp_j == j) &&
 					CheckCoords.verifyCoordinatesBottom(temp_i, temp_j)
 					&& cellGrid.getCells()[temp_i][temp_j]
-							.getBlock() != -1)
+							.getBlockId() != -1)
 				{	
 					/*
 					 *  If a block is found, we set the blockID
@@ -268,22 +269,22 @@ public class BottomAutomaton extends AbstractAutomaton
 					 *  We also remove the cell from the previous block.
 					 */
 					
-					if (cellGrid.getCells()[i][j].getBlock() != -1)
+					if (cellGrid.getCells()[i][j].getBlockId() != -1)
 					{
 						Game.bottomBlocks
 								.get(cellGrid.getCells()[i][j]
-								.getBlock())
+								.getBlockId())
 								.removeCell(cellGrid.getCells()[i][j]);
 					}
 					
 					cellGrid.getCells()[i][j]
-							.setBlock(cellGrid
+							.setBlockId(cellGrid
 							.getCells()[temp_i][temp_j]
-							.getBlock(), false);
+							.getBlockId(), false);
 					
 					Game.bottomBlocks
 							.get(cellGrid.getCells()[temp_i][temp_j]
-							.getBlock())
+							.getBlockId())
 							.addCell(cellGrid
 							.getCells()[i][j]);
 					
@@ -313,7 +314,7 @@ public class BottomAutomaton extends AbstractAutomaton
 				if (!(temp_i == i && temp_j == j) &&
 					CheckCoords.verifyCoordinatesBottom(temp_i, temp_j)
 					&& cellGrid.getCells()[temp_i][temp_j]
-							.getPreviousBlock() != -1)
+							.getPreviousBlockId() != -1)
 				{	
 					/*
 					 *  If a block is found, we set the blockID
@@ -322,22 +323,22 @@ public class BottomAutomaton extends AbstractAutomaton
 					 *  We also remove the cell from the previous block.
 					 */
 					
-					if (cellGrid.getCells()[i][j].getBlock() != -1)
+					if (cellGrid.getCells()[i][j].getBlockId() != -1)
 					{
 						Game.bottomBlocks
 								.get(cellGrid.getCells()[i][j]
-								.getBlock())
+								.getBlockId())
 								.removeCell(cellGrid.getCells()[i][j]);
 					}
 					
 					cellGrid.getCells()[i][j]
-							.setBlock(cellGrid
+							.setBlockId(cellGrid
 							.getCells()[temp_i][temp_j]
-							.getPreviousBlock(), false);
+							.getPreviousBlockId(), false);
 					
 					Game.bottomBlocks
 							.get(cellGrid.getCells()[temp_i][temp_j]
-							.getPreviousBlock())
+							.getPreviousBlockId())
 							.addCell(cellGrid
 							.getCells()[i][j]);
 				}

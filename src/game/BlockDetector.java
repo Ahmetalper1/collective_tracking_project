@@ -40,8 +40,7 @@ public class BlockDetector
 				 *  If one alive cell is found and has no block, we launch a
 				 *  BFS-like search to identify all the new block.
 				 */
-				if (bottomCells[i][j].isAlive() && bottomCells[i][j]
-						.getBlock() == -1)
+				if (bottomCells[i][j].isAlive() && bottomCells[i][j].getBlockId() == -1)
 				{
 					BFSEquivalentBottom(j, i, blockIDBottom, bottomCells);
 					blockIDBottom++;
@@ -70,7 +69,7 @@ public class BlockDetector
 					 * BFS-like search to identify all the new block.
 					 */
 					if (middleCells[i][j].isAlive()
-							&& middleCells[i][j].getBlock() == -1)
+							&& middleCells[i][j].getBlockId() == -1)
 					{
 						BFSEquivalentMiddle(j, i, blockIDMiddle, middleCells,
 								middleAutomaton.getID());
@@ -91,10 +90,10 @@ public class BlockDetector
 			Cell[][] bottomCells)
 	{
 		// Setting up the actual cell to the correct blockID if not already set.
-		if (bottomCells[y][x].getBlock() == -1)
+		if (bottomCells[y][x].getBlockId() == -1)
 		{
 			// Setting the current cell with the correct blockID.
-			bottomCells[y][x].setBlock(blockID, true);
+			bottomCells[y][x].setBlockId(blockID, true);
 			
 			/*
 			 *  If the block was not created (1st call of this function), we
@@ -123,7 +122,7 @@ public class BlockDetector
 				if ((i != y || j != x)
 						&& CheckCoords.verifyCoordinatesBottom(i, j)
 						&& bottomCells[i][j].isAlive()
-						&& bottomCells[i][j].getBlock() == -1)
+						&& bottomCells[i][j].getBlockId() == -1)
 				{
 					BFSEquivalentBottom(j, i, blockID, bottomCells);
 				}
@@ -141,10 +140,10 @@ public class BlockDetector
 			Cell[][] middleCells, int automatonID)
 	{
 		// Setting up the actual cell to the correct blockID if not already set.
-		if (middleCells[y][x].getBlock() == -1)
+		if (middleCells[y][x].getBlockId() == -1)
 		{
 			// Setting the current cell with the correct blockID.
-			middleCells[y][x].setBlock(blockID, true);
+			middleCells[y][x].setBlockId(blockID, true);
 			
 			/*
 			 *  If the block was not created (1st call of this function), we
@@ -172,7 +171,7 @@ public class BlockDetector
 				if ((i != y || j != x)
 						&& CheckCoords.verifyCoordinatesMiddle(i, j)
 						&& middleCells[i][j].isAlive()
-						&& middleCells[i][j].getBlock() == -1)
+						&& middleCells[i][j].getBlockId() == -1)
 				{
 					BFSEquivalentMiddle(j, i, blockID, middleCells,
 							automatonID);
@@ -182,10 +181,11 @@ public class BlockDetector
 	}
 	
 	/*
-	 * This function detects blocks splitting and blocks merging. Is also
-	 * updates the center of every block in the blocks list.
+	 * This function detects blocks splitting and blocks merging. 
+	 * 		--> Ada: it does NOT seem to detect any splitting&merging
+	 * It also updates the center of every block in the blocks list.
 	 */
-	public static void updateBlocks(Game game, int tick)
+	public static void updateBlockCenteres(Game game, int tick)//ada: method used to be called:updateBlocks
 	{
 		LoggerInstance.LOGGER.log(Level.FINEST, 
 				"Updating center of all blocks ...");
@@ -215,11 +215,11 @@ public class BlockDetector
 	 */
 	public static void DetectMergeAndDivisionBottom(Game game)
 	{
-		// Marks the cells as visited yet or not.
+		// Marks cells as already visited or not.
 		boolean[][] visitedCells =
 				new boolean[Game.BOTTOM_ROW][Game.BOTTOM_COLUMN];
 		
-		// Marks the blocks as visited yet or not.
+		// Marks the blocks as already visited or not.
 		boolean[] visitedBlocks = new boolean[Game.bottomBlocks.size()];
 		
 		// Real cells of the grid. Used to modify blocks.
@@ -231,9 +231,10 @@ public class BlockDetector
 			for (int j = 0; j < Game.BOTTOM_COLUMN; j++)
 			{
 				// Only iterating on alive, not visited cells part of a block.
+				//@Ada-TODO: why? why only on cells that are already part of block? or is this the only viable option? 
 				if (!visitedCells[i][j] && gameCells[i][j].isAlive())
 				{
-					if (visitedBlocks[gameCells[i][j].getBlock()])
+					if (visitedBlocks[gameCells[i][j].getBlockId()])//ada: new block split from an existing one?
 					{
 						// Block to be added to the game's list.
 						Block newBlock = new Block(blockIDBottom++,
@@ -246,17 +247,17 @@ public class BlockDetector
 						
 						Game.bottomBlocks.add(newBlock);
 					}
-					else
+					else //ada: the cell belongs to a block that has not been visited yet
 					{
 						/*
 						 * Exploring a block with the cell (i, j) as start.
-						 * Verifying if there is a merge occuring.
+						 * Verifying if there is a merge occurring.
 						 */
 						boolean isMergedBlock = BlockVerificationBFSBottom(
 							i, j, visitedCells, gameCells,
-							gameCells[i][j].getBlock());
+							gameCells[i][j].getBlockId());
 
-						// If there is a merge, we create a new block.
+						// If there is a merge, we create a new block.  //ADA TODO: why create a new block? rather than merging one block into another? what happens to the previous blocks that were merged?
 						if (isMergedBlock)
 						{
 							Block newBlock = new Block(blockIDBottom++,
@@ -266,10 +267,10 @@ public class BlockDetector
 								gameCells, newBlock);
 							Game.bottomBlocks.add(newBlock);
 						}
-						else
+						else//ada: no merge (just an older block?)
 						{
 							// If no merge is found, the block is visited.
-							visitedBlocks[gameCells[i][j].getBlock()] = true;
+							visitedBlocks[gameCells[i][j].getBlockId()] = true;
 						}
 					}
 				}
@@ -298,6 +299,9 @@ public class BlockDetector
 	 * block. The boolean returned indicates if the block verification went well
 	 * (ie false if there was no merge) or not (true is there is a merge
 	 * detected).
+	 * 
+	 * ada: if the blockId of cell(i+/-1,j+/-1) is different from blockId of cell(i,j), then there is a merge;
+	 * ada: it does not create any new block here
 	 */
 	private static boolean BlockVerificationBFSBottom(int i, int j,
 			boolean[][] visitedCells, Cell[][] gameCells, int blockID)
@@ -319,7 +323,7 @@ public class BlockDetector
 						&& gameCells[offset_i][offset_j].isAlive())
 				{
 					// We detect here a merge (the ID is unknown) !
-					if (gameCells[offset_i][offset_j].getBlock() != blockID)
+					if (gameCells[offset_i][offset_j].getBlockId() != blockID)
 					{
 						return true;
 					}
@@ -351,17 +355,17 @@ public class BlockDetector
 			for (int offset_j = j - 1; offset_j <= j + 1; offset_j++)
 			{	
 				// If the cell exists, is alive and part of the new block.
+				//ada: and NOT part of the new block? 
 				if (CheckCoords.verifyCoordinatesBottom(offset_i, offset_j)
-						&& gameCells[offset_i][offset_j].getBlock()
-							!= newBlock.getID()
+						&& gameCells[offset_i][offset_j].getBlockId()
+							!= newBlock.getID() 
 						&& gameCells[offset_i][offset_j].isAlive())
 				{
 					Cell currentCell = gameCells[offset_i][offset_j];
 					
 					// Removing old block, and setting the new one to the cell.
-					Game.bottomBlocks.get(currentCell.getBlock())
-						.removeCell(currentCell);
-					currentCell.setBlock(newBlock.getID(), false);
+					Game.bottomBlocks.get(currentCell.getBlockId()).removeCell(currentCell);
+					currentCell.setBlockId(newBlock.getID(), false);
 					newBlock.addCell(currentCell);
 					
 					// Updating the state and the color of the cell.
