@@ -39,7 +39,7 @@ public class Simulator extends Thread {
 
         this.game = game;
 
-        this.bottomGraph = new Graph(game, AutomatonLevel.BOTTOM, Graph.DEFAULT_BOTTOM_ID);
+        this.bottomGraph = new Graph(game, AutomatonLevel.BOTTOM, Graph.getDefaultBottomId());
 
         this.middleGraphs = new ArrayList<Graph>();
 
