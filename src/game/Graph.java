@@ -45,7 +45,7 @@ public class Graph
 		this.game = game;
 		this.level = level;
 		this.ID = ID;
-		//setTitle();
+		
 		if (level != AutomatonLevel.BOTTOM)
 		{
 			Graph.MINIMUM_HISTORY_SIZE = 2;
@@ -62,20 +62,6 @@ public class Graph
 		}
 	}
 	
-	//ahmet:for easier understanding and more efficient coding i created setTitle method but maybe the reason my graphs not matching is from this so i am working on it.
-	/*
-	     private void setTitle() {
-        if (level == AutomatonLevel.BOTTOM) {
-            title = "Bottom Automaton | No Abstraction | Size: "
-                    + Game.BOTTOM_ROW + "x" + Game.BOTTOM_COLUMN + ".";
-        } else {
-            int threshold = game.getMiddleAutomaton().get(ID).getThreshold();
-            title = "Middle Automaton | Threshold: " + threshold
-                    + " | Granularity: " + Game.granularity.toString()
-                    + " | Size: " + Game.MIDDLE_ROW + "x" + Game.MIDDLE_COLUMN + ".";
-        }
-    }
-	 */
 	/*
 	 * This functions displays the graph containing the movements of the
 	 * blocks found in the bottom automaton.
@@ -163,28 +149,6 @@ public class Graph
 						Game.middleBlocks.get(i).getXHistory(),
 						Game.middleBlocks.get(i).getYHistory());
 					
-					
-					//ahmet:i wrote a seperate method for regression but results didnt match with original code so i am working on it.
-					/*
-    private void addRegressionLine(XYChart chart, Block block) {
-        PolynomialFunction blockTrajectoryFunction = block.getBlockTrajectoryFunction();
-        if (blockTrajectoryFunction != null) {
-            List<Double> xList = block.getXHistory();
-            List<Double> yList = block.getYHistory();
-            double firstX = xList.get(0);
-            double lastX = xList.get(xList.size() - 1);
-            double firstY = yList.get(0);
-            double lastY = yList.get(yList.size() - 1);
-            double[] xFc = { firstX, lastX };
-            double[] yFc = { firstY, lastY };
-            XYSeries lineSeries = chart.addSeries("linear regression_" + block.getID(), xFc, yFc);
-            lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
-        } else {
-            System.out.println("Trajectory function NULL for block: " + block.getID()
-                    + " with " + block.getXHistory().size() + " points ");
-        }
-    }				
-					 */				
 					//ada: add regression function line
 				    PolynomialFunction blockTrajectoryFunction = midBlock.getBlockTrajectoryFunction();
 				    if(blockTrajectoryFunction != null) {

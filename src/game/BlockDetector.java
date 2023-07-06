@@ -162,7 +162,7 @@ public class BlockDetector
 		/*
 		 * We then check here every neighbor of the current cell to see
 		 * if any is alive and has not any block yet. If so, we re launch the
-		 * recursive function no this cell.		
+		 * recursive function no this cell.
 		 */
 		for (int i = y - 1; i <= y + 1; i++)
 		{
@@ -241,7 +241,7 @@ public class BlockDetector
 								gameCells[i][j], BlockType.BOTTOM,
 								Block.BOTTOM_BLOCK_AUTOMATON_ID);
 						
-						// This fills up the newBlock block. See method.
+				 		// This fills up the newBlock block. See method.
 						ReplaceWithNewBlockBottom(i, j, visitedCells, gameCells,
 								newBlock);
 						
