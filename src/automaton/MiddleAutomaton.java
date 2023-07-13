@@ -106,3 +106,4 @@ public class MiddleAutomaton extends AbstractAutomaton
 		return this.ID;
 	}
 }
+

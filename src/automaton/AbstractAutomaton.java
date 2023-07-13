@@ -45,3 +45,4 @@ abstract public class AbstractAutomaton
 	 */
 	protected Rules rules;
 }
+

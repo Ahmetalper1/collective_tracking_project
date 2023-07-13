@@ -34,6 +34,7 @@ public class BlockDetector
 		// Iterating through the whole bottom automaton.
 		for (int i = 0; i < Game.BOTTOM_ROW; i++)
 		{
+
 			for (int j = 0; j < Game.BOTTOM_COLUMN; j++)
 			{
 				/*

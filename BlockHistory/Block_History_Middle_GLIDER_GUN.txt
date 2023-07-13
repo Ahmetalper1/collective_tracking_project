@@ -1,4 +1,4 @@
-MIDDLE BLOCKS HISTORY | PATTERN SELECTED : GLIDER_GUN | LAUNCH DATE : 2023/07/04 21:43:23
+MIDDLE BLOCKS HISTORY | PATTERN SELECTED : GLIDER_GUN | LAUNCH DATE : 2023/07/12 13:59:47
 
 Ticks,Middle Block 0 X,Middle Block 0 Y,Middle Block 1 X,Middle Block 1 Y,Middle Block 2 X,Middle Block 2 Y,Middle Block 3 X,Middle Block 3 Y,Middle Block 4 X,Middle Block 4 Y,Middle Block 5 X,Middle Block 5 Y,Middle Block 6 X,Middle Block 6 Y,Middle Block 7 X,Middle Block 7 Y,Middle Block 8 X,Middle Block 8 Y,Middle Block 9 X,Middle Block 9 Y
 0,11.0,38.0,6.0,37.0,17.0,38.0,0.0,37.0,5.0,37.0,10.0,38.0,17.0,38.0,0.0,37.0,8.0,37.0,12.0,37.0

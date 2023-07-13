@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -71,33 +72,33 @@ public class Graph {
     
     /*ahmet:I edited the code for adding bottom block series and middle block series into separate methods 
     That way code become more organized*/
-    
-    private void addBottomBlockSeries(XYChart chart) {
-        for (int i = 0; i < Game.bottomBlocks.size(); i++) {
-            Block botBlock = Game.bottomBlocks.get(i);
-            if (isValidBlock(botBlock)) {
+    //ahmet: i extracted the same logic use in these two method to a new method. 
+    private void addBlockSeries(XYChart chart, List<Block> blocks) {
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            if (isValidBlock(block)) {
                 chart.addSeries(level.toString() + " Block " + i,
-                        botBlock.getXHistory(),
-                        botBlock.getYHistory());
-                addRegressionLine(chart, botBlock);
+                        block.getXHistory(),
+                        block.getYHistory());
+                addRegressionLine(chart, block);
             }
         }
     }
 
+    private void addBottomBlockSeries(XYChart chart) {
+        addBlockSeries(chart, Game.bottomBlocks);
+    }
+
     private void addMiddleBlockSeries(XYChart chart) {
-        for (int i = 0; i < Game.middleBlocks.size(); i++) {
-            Block midBlock = Game.middleBlocks.get(i);
+        List<Block> relevantBlocks = new ArrayList<>();
+        for (Block midBlock : Game.middleBlocks) {
             if (isValidBlock(midBlock) && midBlock.getAutomatonID() == this.ID) {
-                chart.addSeries(level.toString() + " Block " + i,
-                        midBlock.getXHistory(),
-                        midBlock.getYHistory());
-                addRegressionLine(chart, midBlock);
-            } else if (isValidBlock(midBlock)){
-                System.out.print(Game.middleBlocks.get(i).getAutomatonID());
+                relevantBlocks.add(midBlock);
             }
         }
+        addBlockSeries(chart, relevantBlocks);
     }
-    
+
     //ahmet:I this method to check if a block has a valid history size.that way we avoid duplicating the validation logic in multiple places.
     
     private boolean isValidBlock(Block block) {

@@ -85,3 +85,4 @@ public class TopAutomaton extends AbstractAutomaton
 		return this.threshold;
 	}
 }
+

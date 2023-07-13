@@ -29,7 +29,6 @@ public class AssignBlockMiddle
 		// The temp variables are used to go through the neighbors.
 		int temp_i = i == 0 ? 0 : i - 1;
 		int temp_j = j == 0 ? 0 : j - 1;
-		
 		/*
 		 * We check if any neighbor is alive and already part of a block. If so,
 		 * we assign this one to the current cell, and stop.
