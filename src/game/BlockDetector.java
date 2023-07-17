@@ -1,185 +1,42 @@
 package game;
 
 import java.util.logging.Level;
-
 import automaton.Cell;
 import automaton.MiddleAutomaton;
 import logger.LoggerInstance;
 import utils.CheckCoords;
 
-/*
- * The BlockDetector class holds the static method that detects new blocks on
- * the bottom automaton: DetectBlocks().
- */
-public class BlockDetector
-{
-	// Static counter for blocks of the bottom automaton. 
-	public static int blockIDBottom = 0;
-	
-	// Static counter for blocks of the middle automaton.
-	public static int blockIDMiddle = 0;
-	
-	/*
-	 * This function goes through the whole bottom automaton and detects alive
-	 * cells without blocks.
-	 */
-	public static void DetectBlocksBottom(Game game)
-	{
-		LoggerInstance.LOGGER.log(Level.FINEST,
-				"Starting to look for new bottom blocks ...");
-		
-		// Retrieving cells.
-		Cell[][] bottomCells = game.getBottomAutomaton().getGrid().getCells();
-		
-		// Iterating through the whole bottom automaton.
-		for (int i = 0; i < Game.BOTTOM_ROW; i++)
-		{
+public class BlockDetector {
 
-			for (int j = 0; j < Game.BOTTOM_COLUMN; j++)
-			{
-				/*
-				 *  If one alive cell is found and has no block, we launch a
-				 *  BFS-like search to identify all the new block.
-				 */
-				if (bottomCells[i][j].isAlive() && bottomCells[i][j].getBlockId() == -1)
-				{
-					BFSEquivalentBottom(j, i, blockIDBottom, bottomCells);
-					blockIDBottom++;
-				}
-			}
-		}
-	}
-	
-	public static void DetectBlocksMiddle(Game game)
-	{
-		LoggerInstance.LOGGER.log(Level.FINEST,
-				"Starting to look for new middle blocks ...");
-		
-		for (MiddleAutomaton middleAutomaton : game.getMiddleAutomaton())
-		{
-			// Retrieving cells.
-			Cell[][] middleCells = middleAutomaton.getGrid().getCells();
+    public static int blockIDBottom = 0;
+    public static int blockIDMiddle = 0;
 
-			// Iterating through the whole bottom automaton.
-			for (int i = 0; i < Game.MIDDLE_ROW; i++)
-			{
-				for (int j = 0; j < Game.MIDDLE_COLUMN; j++)
-				{
-					/*
-					 * If one alive cell is found and has no block, we launch a
-					 * BFS-like search to identify all the new block.
-					 */
-					if (middleCells[i][j].isAlive()
-							&& middleCells[i][j].getBlockId() == -1)
-					{
-						BFSEquivalentMiddle(j, i, blockIDMiddle, middleCells,
-								middleAutomaton.getID());
-						blockIDMiddle++;
-					}
-				}
-			}
-		}
-	}
-	
-	 /*
-	  * This function launches a BFS-like search on the automaton from
-	  * the given cell at coordinates X and Y. If it has alive neighbors with
-	  * no blocks, that means it's part of the new one. This is exclusively used
-	  * by the DetectBlocksBottom() method.
-	  */
-	private static void BFSEquivalentBottom(int x, int y, int blockID,
-			Cell[][] bottomCells)
-	{
-		// Setting up the actual cell to the correct blockID if not already set.
-		if (bottomCells[y][x].getBlockId() == -1)
-		{
-			// Setting the current cell with the correct blockID.
-			bottomCells[y][x].setBlockId(blockID, true);
-			
-			/*
-			 *  If the block was not created (1st call of this function), we
-			 *  create a new block.
-			 */
-			if (blockID >= Game.bottomBlocks.size())
-			{
-				Game.bottomBlocks.add(new Block(blockID, bottomCells[y][x],
-					BlockType.BOTTOM, Block.BOTTOM_BLOCK_AUTOMATON_ID));
-			}
-			// Adding the cell to the block.
-			else
-				Game.bottomBlocks.get(blockID).addCell(bottomCells[y][x]);
-		}
-		
-		/*
-		 * We then check here every neighbor of the current cell to see
-		 * if any is alive and has not any block yet. If so, we re-launch the
-		 * recursive function on this cell.		
-		 */
-		
-		for (int i = y - 1; i <= y + 1; i++)
-		{
-			for (int j = x - 1; j <= x + 1; j++)
-			{
-				if ((i != y || j != x)
-						&& CheckCoords.verifyCoordinatesBottom(i, j)
-						&& bottomCells[i][j].isAlive()
-						&& bottomCells[i][j].getBlockId() == -1)
-				{
-					BFSEquivalentBottom(j, i, blockID, bottomCells);
-				}
-			}
-		}
-	}
-	
-	 /*
-	  * This function launches a BFS-like search on the automaton from
-	  * the given cell at coordinates X and Y. If it has alive neighbors with
-	  * no blocks, that means it's part of the new one. This is exclusively used
-	  * by the DetectBlocksMiddle() method.
-	  */
-	private static void BFSEquivalentMiddle(int x, int y, int blockID,
-			Cell[][] middleCells, int automatonID)
-	{
-		// Setting up the actual cell to the correct blockID if not already set.
-		if (middleCells[y][x].getBlockId() == -1)
-		{
-			// Setting the current cell with the correct blockID.
-			middleCells[y][x].setBlockId(blockID, true);
-			
-			/*
-			 *  If the block was not created (1st call of this function), we
-			 *  create a new block.
-			 */
-			if (blockID >= Game.middleBlocks.size())
-			{
-				Game.middleBlocks.add(new Block(blockID, middleCells[y][x],
-					BlockType.MIDDLE, automatonID));
-			}
-			// Adding the cell to the block.
-			else
-				Game.middleBlocks.get(blockID).addCell(middleCells[y][x]);
-		}
-		
-		/*
-		 * We then check here every neighbor of the current cell to see
-		 * if any is alive and has not any block yet. If so, we re launch the
-		 * recursive function no this cell.
-		 */
-		for (int i = y - 1; i <= y + 1; i++)
-		{
-			for (int j = x - 1; j <= x + 1; j++)
-			{
-				if ((i != y || j != x)
-						&& CheckCoords.verifyCoordinatesMiddle(i, j)
-						&& middleCells[i][j].isAlive()
-						&& middleCells[i][j].getBlockId() == -1)
-				{
-					BFSEquivalentMiddle(j, i, blockID, middleCells,
-							automatonID);
-				}
-			}
-		}
-	}
+    public static void DetectBlocksBottom(Game game) {
+        LoggerInstance.LOGGER.log(Level.FINEST, "Starting to look for new bottom blocks ...");
+
+        // Retrieving cells.
+        Cell[][] bottomCells = game.getBottomAutomaton().getGrid().getCells();
+
+        ExtractedLogic.DetectBlocks(game, bottomCells, Game.BOTTOM_ROW, Game.BOTTOM_COLUMN, blockIDBottom,
+                Game.bottomBlocks, BlockType.BOTTOM, Block.BOTTOM_BLOCK_AUTOMATON_ID);
+
+        blockIDBottom++;
+    }
+
+    public static void DetectBlocksMiddle(Game game) {
+        LoggerInstance.LOGGER.log(Level.FINEST, "Starting to look for new middle blocks ...");
+
+        for (MiddleAutomaton middleAutomaton : game.getMiddleAutomaton()) {
+            // Retrieving cells.
+            Cell[][] middleCells = middleAutomaton.getGrid().getCells();
+
+            ExtractedLogic.DetectBlocks(game, middleCells, Game.MIDDLE_ROW, Game.MIDDLE_COLUMN, blockIDMiddle,
+                    Game.middleBlocks, BlockType.MIDDLE, middleAutomaton.getID());
+
+            blockIDMiddle++;
+        }
+    }
+
 	
 	/*
 	 * This function detects blocks splitting and blocks merging. 
