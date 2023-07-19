@@ -86,6 +86,7 @@ public class ExtractedLogic{
     /*ahmet:I edited the code for adding bottom block series and middle block series into separate methods 
     That way code become more organized*/
     //ahmet: i extracted the same logic use in these two method to a new method. 
+    
     static void addBlockSeries(XYChart chart, List<Block> blocks, AutomatonLevel level) {
         for (int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);
