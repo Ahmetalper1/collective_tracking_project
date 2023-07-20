@@ -32,7 +32,7 @@ public class Graph {
         if (level != AutomatonLevel.BOTTOM) {
             Graph.MINIMUM_HISTORY_SIZE = 2;
             this.title = "Middle Automaton | Threshold: " +
-                    game.getMiddleAutomaton().get(ID).getThreshold() +
+                    game.getautomatons().get(ID).getThreshold() +
                     " | Granularity: " + Game.granularity.toString() +
                     " | Size: " + Game.MIDDLE_ROW + "x" + Game.MIDDLE_COLUMN + ".";
         } else {

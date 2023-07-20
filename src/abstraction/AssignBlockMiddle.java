@@ -1,7 +1,7 @@
 package abstraction;
 
+import automaton.Automaton;
 import automaton.Cell;
-import automaton.MiddleAutomaton;
 import game.Block;
 import game.BlockDetector;
 import game.BlockType;
@@ -18,7 +18,7 @@ public class AssignBlockMiddle
 {
 	// Static method for block assigning called by every abstraction method.
 	public static void AssignBlockMiddleMethod(int i, int j,
-			MiddleAutomaton middleAutomaton)
+			Automaton middleAutomaton)
 	{
 		Cell[][] middleCells = middleAutomaton.getGrid().getCells();
 		

@@ -1,8 +1,9 @@
 package game;
 
 import java.util.logging.Level;
+
+import automaton.Automaton;
 import automaton.Cell;
-import automaton.MiddleAutomaton;
 import logger.LoggerInstance;
 import utils.CheckCoords;
 
@@ -26,7 +27,7 @@ public class BlockDetector {
     public static void DetectBlocksMiddle(Game game) {
         LoggerInstance.LOGGER.log(Level.FINEST, "Starting to look for new middle blocks ...");
 
-        for (MiddleAutomaton middleAutomaton : game.getMiddleAutomaton()) {
+        for (Automaton middleAutomaton : game.getautomatons()) {
             // Retrieving cells.
             Cell[][] middleCells = middleAutomaton.getGrid().getCells();
 
