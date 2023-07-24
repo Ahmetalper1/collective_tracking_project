@@ -72,8 +72,7 @@ public class Simulator extends Thread {
                 Thread.sleep(50);
         		
                 // Detecting new blocks if new blocks are found !
-                BlockDetector.DetectBlocksBottom(game);
-                BlockDetector.DetectBlocksMiddle(game);//ada: commented temp!!!!!!!!!!!!!!!!!!!!!!!!
+                BlockDetector.DetectBlocks(game);//ada: commented temp!!!!!!!!!!!!!!!!!!!!!!!!
                 
                 // This updates every block center.
                 BlockDetector.updateBlockCenteres(game, iteration);
