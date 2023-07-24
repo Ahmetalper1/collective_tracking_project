@@ -11,7 +11,7 @@ import logger.LoggerInstance;
 import utils.TickHistory;
 //ahmet: here is the changes i made;
 /*
-Ý removed unused variables (active, type, and automatonID).
+i removed unused variables (active, type, and automatonID).
 i put the calculation of the blocks center into the updateCenter method.
 i Added access modifiers to methods and fields.
 i updated some type of types to double because i read that in that way type works more consistent.

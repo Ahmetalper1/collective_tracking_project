@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import automaton.Automaton;
 import automaton.AutomatonLevel;
+import automaton.MiddleAutomaton;
+import automaton.TopAutomaton;
 import automaton.View;
 import logger.LoggerInstance;
 import utils.TickHistory;
@@ -83,12 +84,12 @@ public class Simulator extends Thread {
                 BlockDetector.DetectMergeAndDivisionBottom(game);
 
                 // Updating all middle automata cells.
-                for (Automaton middle : game.getautomatons()) {
+                for (MiddleAutomaton middle : game.getMiddleAutomaton()) {
                     middle.updateCells();
                 }
 
                 // Updating all the top automata cells.
-                for (Automaton top : game.getTopAutomaton()) {
+                for (TopAutomaton top : game.getTopAutomaton()) {
                     top.updateCells();
                 }
                 
@@ -118,7 +119,7 @@ public class Simulator extends Thread {
 
                     for (Block block : Game.middleBlocks) {
                         System.out.println("Middle Block " + blockCounter + " (Threshold = " +
-                                game.getautomatons().get(block.getAutomatonID()).getThreshold() + " cell(s))" +
+                                game.getMiddleAutomaton().get(block.getAutomatonID()).getThreshold() + " cell(s))" +
                                 ": " + HistoryAnalyzer.analyzeBlock(block));
 
                         block.getTickHistory().FillMissingTicks(LIMIT_STEP_ANALYSIS);
@@ -175,7 +176,7 @@ public class Simulator extends Thread {
 		 *  be located. We increment these while iterating through automata.
 		 */
       
-        int widthOffset = screen.width / (game.getautomatons().size() + 1);
+        int widthOffset = screen.width / (game.getMiddleAutomaton().size() + 1);
         int heightOffset = screen.height - View.BOTTOM_HEIGHT - View.MIDDLE_HEIGHT;
 
 		/*
@@ -183,12 +184,12 @@ public class Simulator extends Thread {
 		 * it to be centered with the other automata.
 		 */
         
-        for (Automaton middle : game.getautomatons()) {
+        for (MiddleAutomaton middle : game.getMiddleAutomaton()) {
             middle.getGrid().display(widthOffset - (View.MIDDLE_WIDTH / 2),
                     heightOffset, "Middle Automaton | " + Game.MIDDLE_ROW + "x" +
                             Game.MIDDLE_COLUMN + " | Threshold : " + middle.getThreshold() + ".");
 
-            widthOffset += screen.width / (game.getautomatons().size() + 1);
+            widthOffset += screen.width / (game.getMiddleAutomaton().size() + 1);
         }
 		// Updating the offsets for the top automata
         widthOffset = screen.width / (game.getTopAutomaton().size() + 1);
@@ -199,7 +200,7 @@ public class Simulator extends Thread {
 		 * it to be centered with the other automata.
 		*/
         
-        for (Automaton top : game.getTopAutomaton()) {
+        for (TopAutomaton top : game.getTopAutomaton()) {
             top.getGrid().display(widthOffset - (View.TOP_WIDTH / 2),
                     heightOffset, "Top Automaton | 1x1 | Threshold : " +
                             top.getThreshold() + "%.");
@@ -209,7 +210,7 @@ public class Simulator extends Thread {
     }
 
     private void createMiddleGraphs() {
-        for (int i = 0; i < this.game.getautomatons().size(); i++) {
+        for (int i = 0; i < this.game.getMiddleAutomaton().size(); i++) {
             this.middleGraphs.add(new Graph(this.game, AutomatonLevel.MIDDLE, i));
         }
     }

@@ -32,7 +32,7 @@ public class Graph {
         if (level != AutomatonLevel.BOTTOM) {
             Graph.MINIMUM_HISTORY_SIZE = 2;
             this.title = "Middle Automaton | Threshold: " +
-                    game.getautomatons().get(ID).getThreshold() +
+                    game.getMiddleAutomaton().get(ID).getThreshold() +
                     " | Granularity: " + Game.granularity.toString() +
                     " | Size: " + Game.MIDDLE_ROW + "x" + Game.MIDDLE_COLUMN + ".";
         } else {
@@ -70,8 +70,23 @@ public class Graph {
         return chart;
     }
     
+    /*ahmet:I edited the code for adding bottom block series and middle block series into separate methods 
+    That way code become more organized*/
+    //ahmet: i extracted the same logic use in these two method to a new method. 
+    private void addBlockSeries(XYChart chart, List<Block> blocks) {
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            if (isValidBlock(block)) {
+                chart.addSeries(level.toString() + " Block " + i,
+                        block.getXHistory(),
+                        block.getYHistory());
+                addRegressionLine(chart, block);
+            }
+        }
+    }
+
     private void addBottomBlockSeries(XYChart chart) {
-        ExtractedLogic.addBlockSeries(chart, Game.bottomBlocks, level);
+        addBlockSeries(chart, Game.bottomBlocks);
     }
 
     private void addMiddleBlockSeries(XYChart chart) {
@@ -81,16 +96,34 @@ public class Graph {
                 relevantBlocks.add(midBlock);
             }
         }
-        ExtractedLogic.addBlockSeries(chart, relevantBlocks, level);
+        addBlockSeries(chart, relevantBlocks);
     }
-    
+
     //ahmet:I this method to check if a block has a valid history size.that way we avoid duplicating the validation logic in multiple places.
     
-    static boolean isValidBlock(Block block) {
+    private boolean isValidBlock(Block block) {
         return block.getXHistory().size() >= MINIMUM_HISTORY_SIZE &&
                 block.getYHistory().size() >= MINIMUM_HISTORY_SIZE;
     }
 
+    private void addRegressionLine(XYChart chart, Block block) {
+        PolynomialFunction blockTrajectoryFunction = block.getBlockTrajectoryFunction();
+        if (blockTrajectoryFunction != null) {
+            List<Double> xList = block.getXHistory();
+            List<Double> yList = block.getYHistory();
+            double firstX = xList.get(0);
+            double lastX = xList.get(xList.size() - 1);
+            double firstFcY = blockTrajectoryFunction.value(firstX);
+            double lastFcY = blockTrajectoryFunction.value(lastX);
+            double[] xFc = { firstX, lastX };
+            double[] yFc = { firstFcY, lastFcY };
+            XYSeries lineSeries = chart.addSeries("linear regression_" + block.getID(), xFc, yFc);
+            lineSeries.setXYSeriesRenderStyle(XYSeriesRenderStyle.Line);
+        } else {
+            System.out.println("Trajectory function NULL for block: " + block.getID() +
+                    " with " + block.getXHistory().size() + " points ");
+        }
+    }
 
     public Game getGame() {
         return game;
@@ -102,9 +135,5 @@ public class Graph {
 
     public static void setDefaultBottomId(Integer defaultBottomId) {
         DEFAULT_BOTTOM_ID = defaultBottomId;
-    }
-    
-    public AutomatonLevel getLevel() {
-        return level;
     }
 }

@@ -1,6 +1,6 @@
 package abstraction;
 
-import automaton.Automaton;
+import automaton.MiddleAutomaton;
 import game.Game;
 
 public class ComputeMiddle
@@ -12,7 +12,7 @@ public class ComputeMiddle
 	 * bottom ones, and the threshold selected.
 	 */
 	public static boolean[][] apply(int threshold, boolean[][] bottomCells,
-		Automaton automaton)
+		MiddleAutomaton automaton)
 	{
 		boolean[][] newCells = new boolean[Game.MIDDLE_ROW][Game.MIDDLE_COLUMN];
 		int square_size = DEFAULT_SQUARE_SIZE;

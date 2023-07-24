@@ -74,6 +74,7 @@ public class BottomAutomaton extends AbstractAutomaton
 		// This indicates to the grid that it needs to update.
 		cellGrid.updateCells(nextCells);
 	}
+
 	
 	/*
 	 * This function count the number of alive neighbors for a cell at height i
@@ -241,6 +242,8 @@ public class BottomAutomaton extends AbstractAutomaton
 			cells[i][j] = rules.getDeadRules()[neighbourCount];
 		}
 	}
+
+
 	
 	private void setNewBlock(int i, int j, CellGrid cellGrid)
 	{
