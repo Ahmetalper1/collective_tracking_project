@@ -9,9 +9,8 @@ import java.util.logging.Level;
 
 import abstraction.GranularitySelection.Granularity;
 import automaton.BottomAutomaton;
-import automaton.MiddleAutomaton;
+import automaton.UpperCA;
 import automaton.Rules;
-import automaton.TopAutomaton;
 import logger.LoggerInstance;
 import patterns.Pattern;
 import utils.OutputFiles;
@@ -34,7 +33,7 @@ public class Game
 	 * This automaton is really the bottomAutomaton but with a different
 	 * granularity. It also serves as input for the top automaton/automata.
 	 */
-	private List<MiddleAutomaton> middleAutomaton;
+	private List<UpperCA> middleAutomaton;
 	// TODO:: CHANGE THESE HARDCODED VALUES
 	public static int MIDDLE_ROW = -1;
 	public static int MIDDLE_COLUMN = -1;
@@ -48,7 +47,7 @@ public class Game
 	 * analyzing it. It then creates a readable output to interpret what is
 	 * going on in the bottom automaton.
 	 */
-	private List<TopAutomaton> topAutomaton;
+	private List<UpperCA> topAutomaton;
 	public static int TOP_ROW = 1;
 	public static int TOP_COLUMN = 1;
 	
@@ -73,8 +72,8 @@ public class Game
 	{
 		LoggerInstance.LOGGER.log(Level.FINEST, "Game is starting !");
 		
-		middleAutomaton = new ArrayList<MiddleAutomaton>();
-		topAutomaton = new ArrayList<TopAutomaton>();
+		middleAutomaton = new ArrayList<UpperCA>();
+		topAutomaton = new ArrayList<UpperCA>();
 		
 		// Creating the bottom automaton with the given data.
 		LoggerInstance.LOGGER.log(Level.FINEST,
@@ -98,7 +97,7 @@ public class Game
 				.apply(thresholdMid, cells, null);
 			
 			
-			MiddleAutomaton newMiddle = new MiddleAutomaton(
+			UpperCA newMiddle = new UpperCA(
 					new Dimension(MIDDLE_COLUMN, MIDDLE_ROW), middleCells,
 					thresholdMid, automatonCounter);
 			//ada changed to have larger midle windows
@@ -118,8 +117,8 @@ public class Game
 				boolean[][] topCells = abstraction.ComputeTop
 					.apply(thresholdTop, middleCells);
 
-				TopAutomaton newTop = new TopAutomaton(
-					new Dimension(TOP_COLUMN, TOP_ROW), topCells, thresholdTop);
+				UpperCA newTop = new UpperCA(
+					new Dimension(TOP_COLUMN, TOP_ROW), topCells, thresholdTop, thresholdMid);
 				
 				// Instantiating the top automaton with the new cells.
 				this.topAutomaton.add(newTop);
@@ -160,12 +159,12 @@ public class Game
 		return this.bottomAutomaton;
 	}
 	
-	public List<MiddleAutomaton> getMiddleAutomaton()
+	public List<UpperCA> getMiddleAutomaton()
 	{
 		return this.middleAutomaton;
 	}
 	
-	public List<TopAutomaton> getTopAutomaton()
+	public List<UpperCA> getTopAutomaton()
 	{
 		return this.topAutomaton;
 	}

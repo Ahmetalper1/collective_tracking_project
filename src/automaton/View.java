@@ -3,16 +3,18 @@ package automaton;
 import java.awt.*;
 import javax.swing.*;
 
+import game.Game;
+
 /*
  * This class represents the visual part of the automaton. This is what is 
  * going to be displayed when the simulator is launched.
  */
 public class View
 {
-	// Dimensions for the Bottom Automaton.
-	public static int BOTTOM_WIDTH = 1100;
-	public static int BOTTOM_HEIGHT = 500;
-	
+	// View sýnýfýnda BOTTOM_WIDTH ve BOTTOM_HEIGHT sabitleri
+	public static int BOTTOM_WIDTH = Game.BOTTOM_COLUMN * 15;
+	public static int BOTTOM_HEIGHT = Game.BOTTOM_ROW * 15;
+
 	// Dimensions for the Middle Automaton.
 	public static int MIDDLE_WIDTH = 300;//250;
 	public static int MIDDLE_HEIGHT = 150;//125;

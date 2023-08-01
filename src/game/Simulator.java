@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import automaton.AutomatonLevel;
-import automaton.MiddleAutomaton;
-import automaton.TopAutomaton;
+import automaton.UpperCA;
 import automaton.View;
 import logger.LoggerInstance;
 import utils.TickHistory;
@@ -42,6 +41,8 @@ public class Simulator extends Thread {
         this.bottomGraph = new Graph(game, AutomatonLevel.BOTTOM, Graph.getDefaultBottomId());
 
         this.middleGraphs = new ArrayList<Graph>();
+        
+        
 
         createMiddleGraphs();
 
@@ -83,12 +84,12 @@ public class Simulator extends Thread {
                 BlockDetector.DetectMergeAndDivisionBottom(game);
 
                 // Updating all middle automata cells.
-                for (MiddleAutomaton middle : game.getMiddleAutomaton()) {
+                for (UpperCA middle : game.getMiddleAutomaton()) {
                     middle.updateCells();
                 }
 
                 // Updating all the top automata cells.
-                for (TopAutomaton top : game.getTopAutomaton()) {
+                for (UpperCA top : game.getTopAutomaton()) {
                     top.updateCells();
                 }
                 
@@ -183,7 +184,7 @@ public class Simulator extends Thread {
 		 * it to be centered with the other automata.
 		 */
         
-        for (MiddleAutomaton middle : game.getMiddleAutomaton()) {
+        for (UpperCA middle : game.getMiddleAutomaton()) {
             middle.getGrid().display(widthOffset - (View.MIDDLE_WIDTH / 2),
                     heightOffset, "Middle Automaton | " + Game.MIDDLE_ROW + "x" +
                             Game.MIDDLE_COLUMN + " | Threshold : " + middle.getThreshold() + ".");
@@ -199,7 +200,7 @@ public class Simulator extends Thread {
 		 * it to be centered with the other automata.
 		*/
         
-        for (TopAutomaton top : game.getTopAutomaton()) {
+        for (UpperCA top : game.getTopAutomaton()) {
             top.getGrid().display(widthOffset - (View.TOP_WIDTH / 2),
                     heightOffset, "Top Automaton | 1x1 | Threshold : " +
                             top.getThreshold() + "%.");

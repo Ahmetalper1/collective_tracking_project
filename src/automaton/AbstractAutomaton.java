@@ -43,7 +43,8 @@ public abstract class AbstractAutomaton {
      * Rules that will be applied through every iteration.
      */
     protected Rules rules;
-    //ahmet
+
+	//ahmet
     /*
      * This function updates the state of the automaton
      * based on the information retrieved from the sub automaton(s).

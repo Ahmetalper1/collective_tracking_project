@@ -3,7 +3,7 @@ package game;
 import java.util.logging.Level;
 
 import automaton.Cell;
-import automaton.MiddleAutomaton;
+import automaton.UpperCA;
 import logger.LoggerInstance;
 import utils.CheckCoords;
 
@@ -43,7 +43,7 @@ public class BlockDetector
 			}
 		}
 		
-		for (MiddleAutomaton middleAutomaton : game.getMiddleAutomaton())
+		for (UpperCA middleAutomaton : game.getMiddleAutomaton())
 		{
 			// Retrieving middle automaton cells.
 			Cell[][] middleCells = middleAutomaton.getGrid().getCells();

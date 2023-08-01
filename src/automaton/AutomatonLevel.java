@@ -7,5 +7,5 @@ public enum AutomatonLevel
 {
 	BOTTOM,
 	MIDDLE,
-	TOP
+	TOP, UPPER
 }

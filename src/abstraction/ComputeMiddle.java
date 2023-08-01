@@ -1,6 +1,6 @@
 package abstraction;
 
-import automaton.MiddleAutomaton;
+import automaton.UpperCA;
 import game.Game;
 
 public class ComputeMiddle
@@ -12,7 +12,7 @@ public class ComputeMiddle
 	 * bottom ones, and the threshold selected.
 	 */
 	public static boolean[][] apply(int threshold, boolean[][] bottomCells,
-		MiddleAutomaton automaton)
+		UpperCA upperCA)
 	{
 		boolean[][] newCells = new boolean[Game.MIDDLE_ROW][Game.MIDDLE_COLUMN];
 		int square_size = DEFAULT_SQUARE_SIZE;
@@ -65,22 +65,22 @@ public class ComputeMiddle
 					newCells[i][j] = true;
 					
 					// Updating the cell's block.
-					if (automaton != null)
+					if (upperCA != null)
 					{
-						AssignBlockMiddle.AssignBlockMiddleMethod(i, j, automaton);//ada commented: bad idea :)
+						AssignBlockMiddle.AssignBlockMiddleMethod(i, j, upperCA);//ada commented: bad idea :)
 					}
 				}
 				
 				// Setting up the dead cell if the automaton exists.
-				else if (automaton != null && automaton.getGrid().getCells()[i][j].getBlockId() != -1)
+				else if (upperCA != null && upperCA.getGrid().getCells()[i][j].getBlockId() != -1)
 				{
 					// Removing the cell from the block's list.
-					Game.middleBlocks.get(automaton.getGrid().getCells()[i][j]
+					Game.middleBlocks.get(upperCA.getGrid().getCells()[i][j]
 						.getBlockId())
-						.removeCell(automaton.getGrid().getCells()[i][j]);
+						.removeCell(upperCA.getGrid().getCells()[i][j]);
 					
 					// Setting the cell's blockID to -1 (dead).
-					automaton.getGrid().getCells()[i][j].setBlockId(-1, false);
+					upperCA.getGrid().getCells()[i][j].setBlockId(-1, false);
 				}
 			}
 		}
