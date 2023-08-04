@@ -49,6 +49,7 @@ public abstract class AbstractAutomaton {
      * This function updates the state of the automaton
      * based on the information retrieved from the sub automaton(s).
      */
+    
     public void updateCells() {
         boolean[][] subAutomatonCells = retrieveSubAutomatonCells();
         boolean[][] newCells = computeNewCells(subAutomatonCells);
@@ -65,12 +66,17 @@ public abstract class AbstractAutomaton {
 
         for (int i = 0; i < subAutomaton.size.height; i++) {
             for (int j = 0; j < subAutomaton.size.width; j++) {
-                tempCells[i][j] = subAutomaton.cellGrid.getState(i, j) == 1;
+                if (i >= 0 && i < subAutomaton.size.height && j >= 0 && j < subAutomaton.size.width) {
+                    tempCells[i][j] = subAutomaton.cellGrid.getState(i, j) == 1;
+                } else {
+                    System.out.println("Index out of bounds: i = " + i + ", j = " + j);
+                }
             }
         }
 
         return tempCells;
     }
+
 
     /*
      * Computes and returns the new cells based on the given sub automaton cells.

@@ -53,15 +53,9 @@ public class Simulator extends Thread {
 	 * Overwritten method that is called when the simulator object is started
 	 * with .start(). This creates a parallel thread.
 	 */
-
     @Override
     public void run() {
         LoggerInstance.LOGGER.log(Level.FINEST, "Starting the iterations ...");
-        
-		/*
-		 * This sets every automaton's JFrame to the right place according to
-		 * the total number of automata.
-		 */
 
         setWindowsLocations();
 
@@ -69,66 +63,51 @@ public class Simulator extends Thread {
 
         while (true) {
             try {
-    			// Stopping the thread to let some time to display/see.
                 Thread.sleep(50);
-        		
-                // Detecting new blocks if new blocks are found !
-                BlockDetector.DetectBlocks(game);//ada: commented temp!!!!!!!!!!!!!!!!!!!!!!!!
-                
-                // This updates every block center.
+
+                BlockDetector.DetectBlocks(game);
                 BlockDetector.updateBlockCenteres(game, iteration);
 
-                game.getBottomAutomaton().nextIteration();//applying the rules to the CA
-
-                // Handles blocks divisions and merges.
+                game.getBottomAutomaton().nextIteration();
                 BlockDetector.DetectMergeAndDivisionBottom(game);
 
-                // Updating all middle automata cells.
                 for (UpperCA middle : game.getMiddleAutomaton()) {
                     middle.updateCells();
                 }
 
-                // Updating all the top automata cells.
                 for (UpperCA top : game.getTopAutomaton()) {
                     top.updateCells();
                 }
-                
-				/*
-				 * This is executed when we reach the limit previously set by
-				 * the user on the menu.
-				 */                
-                
+
                 if (iteration == LIMIT_STEP_ANALYSIS) {
-					// This is where we can start the analysis of the blocks.                	
                     LoggerInstance.LOGGER.log(Level.FINEST, "Starting the analysis of blocks ...");
 
-                    // This counts the number of blocks, for printing purposes.
                     int blockCounter = 0;
 
-					////ada: analysis moved here (from after the display)
-					// Analyzing each block.
                     for (Block block : Game.bottomBlocks) {
                         System.out.println("Bottom Block " + blockCounter + ": " + HistoryAnalyzer.analyzeBlock(block));
-
                         block.getTickHistory().FillMissingTicks(LIMIT_STEP_ANALYSIS);
-
                         blockCounter++;
                     }
 
                     blockCounter = 0;
 
                     for (Block block : Game.middleBlocks) {
-                        System.out.println("Middle Block " + blockCounter + " (Threshold = " +
-                                game.getMiddleAutomaton().get(block.getAutomatonID()).getThreshold() + " cell(s))" +
+                        int automatonID = block.getAutomatonID();
+                        List<UpperCA> middleAutomaton = game.getMiddleAutomaton();
+
+                        if (automatonID >= 0 && automatonID < middleAutomaton.size()) {
+                            System.out.println("Middle Block " + blockCounter + " (Threshold = " +
+                                middleAutomaton.get(automatonID).getThreshold() + " cell(s))" +
                                 ": " + HistoryAnalyzer.analyzeBlock(block));
+                        } else {
+                            System.out.println("Invalid automaton ID: " + automatonID);
+                        }
 
                         block.getTickHistory().FillMissingTicks(LIMIT_STEP_ANALYSIS);
-
                         blockCounter++;
                     }
-            		////
-                    
-					// Displaying every graph of movements of the blocks.
+
                     if (Game.bottomBlocks.size() > 0) {
                         bottomGraph.display();
                     }
@@ -149,8 +128,6 @@ public class Simulator extends Thread {
                 }
 
                 iteration++;
-        	
-                // If the program crashes, we catch it and exit safely.        
             } catch (InterruptedException e) {
                 LoggerInstance.LOGGER.log(Level.FINEST, "InterruptedException in Simulator.run()! Stopping the program.");
                 System.exit(1);
@@ -160,6 +137,7 @@ public class Simulator extends Thread {
             }
         }
     }
+
 
     private void setWindowsLocations() {
     	
