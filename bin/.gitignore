@@ -1,3 +1,9 @@
+/gui/
+/listeners/
+/logger/
+/main/
+/patterns/
+/utils/
 /abstraction/
 /automaton/
 /game/
