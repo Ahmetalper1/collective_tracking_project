@@ -19,8 +19,6 @@ public class AssignBlockMiddle {
     public static void AssignBlockMiddleMethod(int i, int j, UpperCA upperCA) {
         Cell[][] middleCells = upperCA.getGrid().getCells();
         
-        // Debugging: Print indices for debugging
-        System.out.println("i: " + i + ", j: " + j);
 
         // If the cell indices are out of bounds, we return.
         if (i < 0 || i >= middleCells.length || j < 0 || j >= middleCells[i].length) {
