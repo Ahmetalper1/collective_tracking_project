@@ -94,7 +94,7 @@ public class Game
 		for (Integer thresholdMid : Game.MiddleThresholds)
 		{
 			boolean[][] middleCells = abstraction.ComputeMiddle
-				.apply(thresholdMid, cells, null);
+				.apply(thresholdMid, cells);
 			
 			
 			UpperCA newMiddle = new UpperCA(

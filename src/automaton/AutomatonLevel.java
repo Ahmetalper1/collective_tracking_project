@@ -6,6 +6,5 @@ package automaton;
 public enum AutomatonLevel
 {
 	BOTTOM,
-	MIDDLE,
-	TOP, UPPER
+	UPPER
 }

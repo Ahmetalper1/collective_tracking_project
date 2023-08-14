@@ -61,19 +61,24 @@ public class CellGrid
 	/*
 	 * This updates the grid of cells.
 	 */
-	public void updateCells(boolean[][] newCells)
-	{
-		for (int i = 0; i < size.height; i++)
-		{
-			for (int j = 0; j < size.width; j++)
-			{
-				this.cells[i][j].updateState(newCells[i][j]);
-			}
-		}
-		
-		// Updating the frame so it displays the potential changes.
-		view.updateFrame();
+	public void updateCells(boolean[][] newCells) {
+	    if (newCells == null || newCells.length != size.height) {
+	        // Handle the mismatch, e.g., log an error or throw an exception
+	        return;
+	    }
+	    
+	    for (int i = 0; i < size.height; i++) {
+	        if (newCells[i].length != size.width) {
+	            // Handle the mismatch for this row
+	            continue;
+	        }
+	        for (int j = 0; j < size.width; j++) {
+	            this.cells[i][j].updateState(newCells[i][j]);
+	        }
+	    }
+	    view.updateFrame();
 	}
+
 	/*
 	 * This functions displays the grid.
 	 */

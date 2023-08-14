@@ -155,7 +155,7 @@ public class Simulator extends Thread {
 		 */
       
         int widthOffset = screen.width / (game.getMiddleAutomaton().size() + 1);
-        int heightOffset = screen.height - View.BOTTOM_HEIGHT - View.MIDDLE_HEIGHT;
+        int heightOffset = screen.height - View.BOTTOM_HEIGHT - View.UPPER_HEIGHT;
 
 		/*
 		 * Going through every automaton and setting its location in order for
@@ -163,7 +163,7 @@ public class Simulator extends Thread {
 		 */
         
         for (UpperCA middle : game.getMiddleAutomaton()) {
-            middle.getGrid().display(widthOffset - (View.MIDDLE_WIDTH / 2),
+            middle.getGrid().display(widthOffset - (View.UPPER_WIDTH / 2),
                     heightOffset, "Middle Automaton | " + Game.MIDDLE_ROW + "x" +
                             Game.MIDDLE_COLUMN + " | Threshold : " + middle.getThreshold() + ".");
 
@@ -171,7 +171,7 @@ public class Simulator extends Thread {
         }
 		// Updating the offsets for the top automata
         widthOffset = screen.width / (game.getTopAutomaton().size() + 1);
-        heightOffset = screen.height - View.BOTTOM_HEIGHT - View.MIDDLE_HEIGHT - View.TOP_HEIGHT;
+        heightOffset = screen.height - View.BOTTOM_HEIGHT - View.UPPER_HEIGHT - View.UPPER_HEIGHT;
 		
         /*
 		 * Going through every automaton and setting its location in order for
@@ -179,7 +179,7 @@ public class Simulator extends Thread {
 		*/
         
         for (UpperCA top : game.getTopAutomaton()) {
-            top.getGrid().display(widthOffset - (View.TOP_WIDTH / 2),
+            top.getGrid().display(widthOffset - (View.UPPER_WIDTH / 2),
                     heightOffset, "Top Automaton | 1x1 | Threshold : " +
                             top.getThreshold() + "%.");
 
@@ -189,7 +189,7 @@ public class Simulator extends Thread {
 
     private void createMiddleGraphs() {
         for (int i = 0; i < this.game.getMiddleAutomaton().size(); i++) {
-            this.middleGraphs.add(new Graph(this.game, AutomatonLevel.MIDDLE, i));
+            this.middleGraphs.add(new Graph(this.game, AutomatonLevel.UPPER, i));
         }
     }
 }
